@@ -235,6 +235,45 @@ function getWeekForDay(dayIndex) {
   return Math.min(Math.floor(dayIndex / 7), 4);
 }
 
+function showToast(message, icon = '✨') {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.style.position = 'fixed';
+    container.style.top = '24px';
+    container.style.right = '24px';
+    container.style.zIndex = '999999';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.gap = '10px';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = 'custom-toast';
+  toast.style.background = '#111526';
+  toast.style.border = '1px solid var(--border-glow)';
+  toast.style.borderRadius = '12px';
+  toast.style.padding = '14px 20px';
+  toast.style.color = '#ffffff';
+  toast.style.fontSize = '14px';
+  toast.style.fontWeight = '600';
+  toast.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(99, 102, 241, 0.3)';
+  toast.style.display = 'flex';
+  toast.style.alignItems = 'center';
+  toast.style.gap = '10px';
+  toast.style.animation = 'popIn 0.3s ease';
+  toast.innerHTML = `<span style="font-size: 20px;">${icon}</span> <span>${message}</span>`;
+
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
+}
+
 function generateId() {
   return 'id_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 }
@@ -297,6 +336,11 @@ async function init() {
 
   updateThemeButton();
   updateSoundButton();
+
+  // Auto-open Weekly Check-in reflection popup on reload/login
+  setTimeout(() => {
+    openReflectionModal();
+  }, 600);
 }
 
 function updateUserDisplay() {
@@ -1835,7 +1879,7 @@ function toggleTimer() {
         saveState();
         playSound('achievement');
         triggerConfetti();
-        alert('🎉 Focus Session Complete! You earned +5 coins!');
+        showToast('Focus Session Complete! You earned +5 coins!', '🎉');
       }
     }, 1000);
   }
@@ -1918,7 +1962,7 @@ async function fetchLeaderboard() {
 
 function toggleNotifications() {
   if (!('Notification' in window)) {
-    alert('Browser notifications are not supported by your browser.');
+    showToast('Browser notifications are not supported by your browser.', '⚠️');
     return;
   }
 
@@ -1927,17 +1971,18 @@ function toggleNotifications() {
       body: 'Notifications are active! We will remind you to keep up your daily habits. 🔥',
       icon: '/manifest.json'
     });
-    alert('Notifications are active!');
+    showToast('Notifications are active!', '🔔');
   } else if (Notification.permission !== 'denied') {
     Notification.requestPermission().then(permission => {
       if (permission === 'granted') {
         new Notification('HabitFlow 📊', {
           body: 'Notifications enabled! Keep up your awesome habit streak! 🔥'
         });
+        showToast('Notifications enabled!', '🔔');
       }
     });
   } else {
-    alert('Notification permissions were previously blocked in your browser settings.');
+    showToast('Notification permissions were blocked in browser settings.', '⚠️');
   }
 }
 
@@ -1961,7 +2006,7 @@ function saveReflection() {
   triggerConfetti();
 
   closeModal('reflection-modal-overlay');
-  alert(`🌟 Reflection saved! You earned +10 coins! (Mood: ${mood})`);
+  showToast(`Reflection saved! You earned +10 coins!`, '🌟');
 }
 
 /* ------ Habit Modal helpers ------ */
@@ -2008,7 +2053,7 @@ function saveHabitFromModal() {
   const diff = getSelectedDifficulty();
 
   if (!name) {
-    alert('Please enter a habit name.');
+    showToast('Please enter a habit name.', '⚠️');
     return;
   }
 
@@ -2030,6 +2075,7 @@ function saveHabitFromModal() {
 
   editingHabitIndex = null;
   closeModal('habit-modal-overlay');
+  showToast('Habit saved successfully!', '✨');
   saveState();
   refreshAll();
 }
@@ -2040,7 +2086,7 @@ function saveRewardFromModal() {
   const emoji = ($('#reward-emoji-input')?.value || '').trim() || '🎁';
 
   if (!name) {
-    alert('Please enter a reward name.');
+    showToast('Please enter a reward name.', '⚠️');
     return;
   }
 

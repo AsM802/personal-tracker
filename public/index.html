@@ -26,7 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=9.0">
+  <link rel="stylesheet" href="style.css?v=10.0">
 </head>
 
 <body>
@@ -443,59 +443,68 @@
 
   <!-- Weekly Reflection Modal -->
   <div class="modal-overlay" id="reflection-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="reflection-modal-title" hidden>
-    <div class="modal reflection-modal-card" id="reflection-modal">
-      <div class="modal-header header-purple">
-        <h2 id="reflection-modal-title">🌟 Weekly Progress Reflection</h2>
+    <div class="modal reflection-card-executive" id="reflection-modal">
+      <div class="modal-header header-gradient-executive">
+        <div>
+          <h2 id="reflection-modal-title">🌟 Weekly Progress Review</h2>
+          <p class="header-subtitle">Reflect on your habit streak & claim weekly reward coins!</p>
+        </div>
         <button class="btn-icon modal-close" id="reflection-modal-close" aria-label="Close reflection modal">✕</button>
       </div>
-      <div class="modal-body">
-        <div class="reflection-banner">
-          <span>🏆 Claim Weekly Check-in Bonus (+10 🪙)</span>
+      <div class="modal-body executive-body">
+        <div class="bonus-badge-card">
+          <span class="badge-icon">🪙</span>
+          <div class="badge-text">
+            <strong>Weekly Check-in Bonus</strong>
+            <small>Earn +10 Habit Coins upon submitting your review!</small>
+          </div>
         </div>
         
         <!-- Question 1: Mood -->
-        <div class="form-group">
-          <label>1. How was your week overall?</label>
-          <div class="mood-grid" id="mood-selector">
-            <button type="button" class="mood-card" data-mood="🔥">
-              <span class="mood-emoji">🔥</span>
-              <span class="mood-label">Crushed It</span>
+        <div class="form-group-executive">
+          <label class="executive-label">1. How was your overall momentum this week?</label>
+          <div class="mood-grid-executive" id="mood-selector">
+            <button type="button" class="mood-card-exec" data-mood="🔥">
+              <span class="mood-icon">🔥</span>
+              <span class="mood-title">Crushed It</span>
             </button>
-            <button type="button" class="mood-card active" data-mood="😊">
-              <span class="mood-emoji">😊</span>
-              <span class="mood-label">Good</span>
+            <button type="button" class="mood-card-exec active" data-mood="😊">
+              <span class="mood-icon">😊</span>
+              <span class="mood-title">Good</span>
             </button>
-            <button type="button" class="mood-card" data-mood="😐">
-              <span class="mood-emoji">😐</span>
-              <span class="mood-label">Okay</span>
+            <button type="button" class="mood-card-exec" data-mood="😐">
+              <span class="mood-icon">😐</span>
+              <span class="mood-title">Okay</span>
             </button>
-            <button type="button" class="mood-card" data-mood="😴">
-              <span class="mood-emoji">😴</span>
-              <span class="mood-label">Struggled</span>
+            <button type="button" class="mood-card-exec" data-mood="😴">
+              <span class="mood-icon">😴</span>
+              <span class="mood-title">Struggled</span>
             </button>
           </div>
         </div>
 
         <!-- Question 2: Task Completion Status -->
-        <div class="form-group">
-          <label for="reflection-task-status">2. Did you finish your daily tasks as planned?</label>
-          <select id="reflection-task-status" class="styled-select">
-            <option value="all">🎉 Completed 100% of my daily tasks</option>
-            <option value="most" selected>👍 Completed most of my tasks</option>
-            <option value="some">💪 Finished a few, resetting focus for next week</option>
-            <option value="missed">🎯 Missed most, recommitting to my schedule</option>
-          </select>
+        <div class="form-group-executive">
+          <label class="executive-label" for="reflection-task-status">2. Did you finish your planned daily tasks?</label>
+          <div class="select-wrapper">
+            <select id="reflection-task-status" class="executive-select">
+              <option value="all">🎉 Completed 100% of daily habits</option>
+              <option value="most" selected>👍 Completed most habits consistently</option>
+              <option value="some">💪 Finished a few, resetting focus for next week</option>
+              <option value="missed">🎯 Missed most, recommitting to my schedule</option>
+            </select>
+          </div>
         </div>
 
         <!-- Question 3: Notes / Reflection -->
-        <div class="form-group">
-          <label for="reflection-notes">3. Biggest win or notes for next week:</label>
-          <textarea id="reflection-notes" placeholder="e.g. Consistently completed morning study sessions and stayed focused!" rows="3"></textarea>
+        <div class="form-group-executive">
+          <label class="executive-label" for="reflection-notes">3. Key takeaway or notes for next week:</label>
+          <textarea id="reflection-notes" class="executive-textarea" placeholder="e.g. Consistently completed morning study sessions and stayed focused!" rows="3"></textarea>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" id="reflection-modal-cancel">Skip</button>
-        <button class="btn btn-primary btn-claim" id="reflection-modal-save">Submit & Claim +10 🪙</button>
+      <div class="modal-footer executive-footer">
+        <button class="btn btn-secondary exec-btn-sec" id="reflection-modal-cancel">Skip</button>
+        <button class="btn btn-primary exec-btn-pri" id="reflection-modal-save">✨ Submit & Claim +10 🪙</button>
       </div>
     </div>
   </div>

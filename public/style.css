@@ -529,6 +529,197 @@ th.day-number.today-column { color: var(--accent-light) !important; font-weight:
   transform: translateY(-2px) !important;
 }
 
+/* ============================================================
+   EXECUTIVE WEEKLY REFLECTION MODAL ("WORLD CLASS POPUP")
+   ============================================================ */
+.reflection-card-executive {
+  max-width: 560px !important;
+  border: 1px solid rgba(168, 85, 247, 0.4) !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), 0 0 40px rgba(168, 85, 247, 0.25) !important;
+  border-radius: 24px !important;
+  background: #0f1322 !important;
+}
+
+.header-gradient-executive {
+  background: linear-gradient(135deg, #6366f1, #a855f7) !important;
+  padding: 24px 28px !important;
+}
+
+.header-gradient-executive h2 {
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+}
+
+.header-subtitle {
+  font-size: 12px !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  margin-top: 4px !important;
+  font-weight: 500 !important;
+}
+
+.executive-body {
+  padding: 28px !important;
+  gap: 20px !important;
+  background: #0f1322 !important;
+}
+
+.bonus-badge-card {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(99, 102, 241, 0.15)) !important;
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+  border-radius: 14px !important;
+  padding: 14px 18px !important;
+}
+
+.bonus-badge-card .badge-icon {
+  font-size: 28px !important;
+}
+
+.bonus-badge-card .badge-text {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.bonus-badge-card .badge-text strong {
+  color: #ffffff !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+}
+
+.bonus-badge-card .badge-text small {
+  color: #c084fc !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.form-group-executive {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+.executive-label {
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.8px !important;
+  color: #a5b4fc !important;
+}
+
+.mood-grid-executive {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 12px !important;
+}
+
+.mood-card-exec {
+  background: #181e36 !important;
+  border: 1px solid #2a3458 !important;
+  border-radius: 14px !important;
+  padding: 14px 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.mood-card-exec:hover {
+  transform: translateY(-3px) !important;
+  border-color: #818cf8 !important;
+  background: #1f2747 !important;
+}
+
+.mood-card-exec.active, .mood-card-exec.selected {
+  border-color: #a855f7 !important;
+  background: rgba(168, 85, 247, 0.25) !important;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.4) !important;
+  transform: scale(1.05) !important;
+}
+
+.mood-card-exec .mood-icon { font-size: 28px !important; }
+.mood-card-exec .mood-title { font-size: 11px !important; font-weight: 800 !important; color: #ffffff !important; }
+
+.select-wrapper {
+  position: relative !important;
+  width: 100% !important;
+}
+
+.executive-select {
+  width: 100% !important;
+  padding: 14px 16px !important;
+  border-radius: 12px !important;
+  border: 1px solid #2a3458 !important;
+  background: #181e36 !important;
+  color: #ffffff !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  outline: none !important;
+  cursor: pointer !important;
+  appearance: auto !important;
+}
+
+.executive-select:focus {
+  border-color: #a855f7 !important;
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.3) !important;
+}
+
+.executive-textarea {
+  width: 100% !important;
+  padding: 14px 16px !important;
+  border-radius: 12px !important;
+  border: 1px solid #2a3458 !important;
+  background: #181e36 !important;
+  color: #ffffff !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  outline: none !important;
+  resize: vertical !important;
+}
+
+.executive-textarea:focus {
+  border-color: #a855f7 !important;
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.3) !important;
+}
+
+.executive-footer {
+  padding: 20px 28px !important;
+  background: #13172a !important;
+  border-top: 1px solid #2a3458 !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 14px !important;
+}
+
+.exec-btn-sec {
+  background: #181e36 !important;
+  border: 1px solid #2a3458 !important;
+  color: #94a3b8 !important;
+  padding: 12px 20px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+.exec-btn-pri {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: #ffffff !important;
+  padding: 12px 24px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4) !important;
+}
+
+.exec-btn-pri:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6) !important;
+}
+
 @keyframes popIn {
   from { opacity: 0; transform: scale(0.9) translateY(15px); }
   to { opacity: 1; transform: scale(1) translateY(0); }

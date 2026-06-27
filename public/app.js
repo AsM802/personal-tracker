@@ -1313,7 +1313,7 @@ function toggleTheme() {
 
 function updateThemeButton() {
   const btn = $('#theme-toggle');
-  if (btn) btn.textContent = STATE.darkMode ? '☀️' : '🌙';
+  if (btn) btn.textContent = STATE.darkMode ? '☀️ Light Theme' : '🌙 Dark Theme';
 }
 
 /* ─────────────────────────────────────────────

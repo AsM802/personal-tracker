@@ -1,5 +1,5 @@
 require('dotenv').config();
-// Vercel Production Build Trigger v1.1.0
+// Vercel Production Build Trigger v1.2.0
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');

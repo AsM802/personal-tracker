@@ -312,6 +312,15 @@ function updateUserDisplay() {
       window.location.href = '/login.html';
     });
   }
+
+  const mottoBanner = document.getElementById('motto-banner');
+  if (mottoBanner && currentUser) {
+    if (currentUser.username === 'AsM' || currentUser.email === 'agnives46@gmail.com') {
+      mottoBanner.style.display = 'flex';
+    } else {
+      mottoBanner.style.display = 'none';
+    }
+  }
 }
 
 function drawAllCharts() {

@@ -1,0 +1,19 @@
+{
+  "name": "HabitFlow — Digital Habit Tracker",
+  "short_name": "HabitFlow",
+  "description": "Build better habits and track them daily with streaks, achievements, and rewards.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#6366f1",
+  "orientation": "any",
+  "categories": ["productivity", "lifestyle", "health"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

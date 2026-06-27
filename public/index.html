@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habit Tracker — Build Better Habits</title>
+  <meta name="description" content="HabitFlow — A beautiful, gamified digital habit tracker to build better habits, track streaks, earn rewards, and visualize your progress with charts and heatmaps.">
+  <meta name="author" content="HabitFlow">
+  <meta name="keywords" content="habit tracker, productivity, daily habits, streaks, goal tracking, self improvement">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Habit Tracker — Build Better Habits">
+  <meta property="og:description" content="A beautiful, gamified digital habit tracker to build better habits and visualize your progress.">
+  <meta property="og:type" content="website">
+
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="HabitFlow">
+
+  <!-- Google Fonts — Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="app-container" id="app">
+
+    <!-- ═══════════════════════════════════════════
+         TOP BAR
+    ═══════════════════════════════════════════ -->
+    <header class="header-bar" role="banner">
+      <div class="logo">
+        <span class="logo-icon" aria-hidden="true">📊</span>
+        <span class="logo-text">HabitFlow</span>
+      </div>
+      <div class="header-controls">
+        <button class="btn-icon sound-toggle" id="sound-toggle" title="Toggle sounds" aria-label="Toggle sound effects">🔊</button>
+        <button class="btn-icon theme-toggle" id="theme-toggle" title="Toggle theme" aria-label="Toggle dark or light theme">🌙</button>
+        <button class="btn btn-primary" id="export-btn" aria-label="Export tracker as image">📤 Export</button>
+      </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════
+         HEADER SECTION — Month Info / Charts
+    ═══════════════════════════════════════════ -->
+    <section class="header-section" aria-label="Month selection and progress overview">
+
+      <!-- Left: Month Info -->
+      <div class="month-info card">
+        <h1 id="month-display" class="month-title">July</h1>
+        <p class="subtitle">· HABIT TRACKER ·</p>
+        <div class="selector-row">
+          <div class="selector-group">
+            <label for="month-select">MONTH</label>
+            <select id="month-select" aria-label="Select month">
+              <!-- Options Jan–Dec, populated by JS -->
+            </select>
+          </div>
+          <div class="selector-group">
+            <label for="year-select">YEAR</label>
+            <select id="year-select" aria-label="Select year">
+              <!-- Options populated by JS -->
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: Daily Progress Bar Chart -->
+      <div class="chart-container card" id="daily-progress-section">
+        <div class="section-label" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">DAILY PROGRESS</div>
+        <canvas id="daily-progress-chart" aria-label="Bar chart showing daily habit completion progress"></canvas>
+      </div>
+
+      <!-- Right: Overall Progress Ring -->
+      <div class="chart-container card" id="overall-progress-section">
+        <div class="section-label" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">PROGRESS</div>
+        <div class="ring-chart-wrapper">
+          <canvas id="overall-progress-ring" width="160" height="160" aria-label="Circular progress ring showing overall completion"></canvas>
+          <div class="ring-center-text">
+            <span id="progress-completed" class="stat-value">0</span>
+            <span class="stat-divider">/</span>
+            <span id="progress-total" class="stat-value">0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         MAIN TRACKER SECTION — Habit Grid
+    ═══════════════════════════════════════════ -->
+    <section class="tracker-section card" aria-label="Daily habits tracker grid">
+      <div class="tracker-header">
+        <div class="section-label" style="background: linear-gradient(135deg, #3b82f6, #06b6d4);">DAILY HABITS</div>
+        <div class="tracker-actions">
+          <button class="btn btn-primary add-habit-btn" id="add-habit-btn" aria-label="Add a new habit">+ Add Habit</button>
+        </div>
+      </div>
+
+      <div class="tracker-content">
+        <div class="habit-grid-wrapper">
+          <table class="habit-grid" id="habit-grid" role="grid" aria-label="Monthly habit tracking grid">
+            <thead id="grid-thead">
+              <!-- Row 1: Week group headers -->
+              <!-- Row 2: Day letters (M T W T F S S) -->
+              <!-- Row 3: Day numbers (1, 2, 3…) -->
+              <!-- All populated by JS -->
+            </thead>
+            <tbody id="grid-tbody">
+              <!-- Habit rows populated by JS -->
+              <!-- Each row: habit name cell + day cells + progress cells -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Progress Summary -->
+        <div class="progress-section" id="progress-section">
+          <div class="section-label" style="background: linear-gradient(135deg, #10b981, #059669);">PROGRESS</div>
+          <table class="progress-table" id="progress-table" aria-label="Per-habit progress summary">
+            <thead>
+              <tr>
+                <th scope="col">Goal</th>
+                <th scope="col">Progress</th>
+                <th scope="col">Count</th>
+              </tr>
+            </thead>
+            <tbody id="progress-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         BOTTOM SECTION — Overview & Top Habits
+    ═══════════════════════════════════════════ -->
+    <section class="bottom-section" aria-label="Weekly overview and top habits">
+
+      <!-- Left: Daily Overview -->
+      <div class="overview-card card">
+        <div class="overview-header">
+          <div class="section-label" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">DAILY OVERVIEW</div>
+          <nav class="week-tabs" id="week-tabs" aria-label="Week selection tabs">
+            <!-- Tab buttons: Week 1–5, populated by JS -->
+          </nav>
+        </div>
+
+        <div class="overview-content">
+          <div class="overview-left">
+            <canvas id="overview-donut" width="150" height="150" aria-label="Donut chart showing weekly completion"></canvas>
+            <div class="donut-center-text">
+              <span class="donut-label">COMPLETED</span>
+              <span id="overview-completed" class="stat-value">0</span>
+              <span class="stat-divider">/</span>
+              <span id="overview-total" class="stat-value">0</span>
+            </div>
+          </div>
+          <div class="overview-right">
+            <canvas id="weekly-area-chart" aria-label="Area chart showing weekly trend"></canvas>
+          </div>
+        </div>
+
+        <div class="overview-stats">
+          <div class="stats-row" id="daily-stats">
+            <!-- Populated by JS: Daily Goal, Complete, Incomplete per week -->
+          </div>
+          <div class="stats-row" id="weekly-progress-stats">
+            <!-- Populated by JS: Weekly Progress percentages -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Top Habits -->
+      <div class="top-habits-card card">
+        <div class="section-label" style="background: linear-gradient(135deg, #f59e0b, #d97706);">TOP 10 HABITS</div>
+        <div class="top-habits-header" role="row" aria-label="Top habits list header">
+          <span>#</span>
+          <span>HABIT</span>
+          <span>%</span>
+        </div>
+        <div id="top-habits-list" class="top-habits-list" role="list" aria-label="Top 10 habits ranked by completion">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         STREAKS & ACHIEVEMENTS
+    ═══════════════════════════════════════════ -->
+    <section class="gamification-section" aria-label="Streaks and achievements">
+      <div class="streaks-card card">
+        <div class="section-label" style="background: linear-gradient(135deg, #ef4444, #f97316);">🔥 STREAKS</div>
+        <div id="streaks-list" class="streaks-list" role="list" aria-label="Current habit streaks">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="achievements-card card">
+        <div class="section-label" style="background: linear-gradient(135deg, #a855f7, #6366f1);">🏆 ACHIEVEMENTS</div>
+        <div id="achievements-list" class="achievements-list" role="list" aria-label="Unlocked achievements">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         REWARD SHOP
+    ═══════════════════════════════════════════ -->
+    <section class="reward-section card" aria-label="Reward shop">
+      <div class="reward-header">
+        <div class="section-label" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">🛒 REWARD SHOP</div>
+        <div class="reward-info">
+          <span class="coin-display">🪙 <span id="coin-count">0</span> coins</span>
+          <span class="unlock-status" id="shop-status">🔒 Reach 75% to unlock</span>
+        </div>
+        <button class="btn btn-primary" id="add-reward-btn" aria-label="Add a new reward">+ Add Reward</button>
+      </div>
+      <div id="rewards-grid" class="rewards-grid" role="list" aria-label="Available rewards">
+        <!-- Reward cards populated by JS -->
+      </div>
+      <div class="redeemed-section">
+        <h3>Redeemed Rewards</h3>
+        <div id="redeemed-list" class="redeemed-list" role="list" aria-label="Previously redeemed rewards">
+          <!-- Redeemed items populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         YEARLY HEATMAP
+    ═══════════════════════════════════════════ -->
+    <section class="heatmap-section card" aria-label="Yearly habit heatmap">
+      <div class="section-label" style="background: linear-gradient(135deg, #10b981, #059669);">📊 YEARLY HEATMAP</div>
+      <div id="heatmap-container" class="heatmap-container" aria-label="Heatmap grid showing daily completion intensity across the year">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+  </div><!-- end .app-container -->
+
+  <!-- ═══════════════════════════════════════════
+       MODALS
+  ═══════════════════════════════════════════ -->
+
+  <!-- Add / Edit Habit Modal -->
+  <div class="modal-overlay" id="habit-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="habit-modal-title" hidden>
+    <div class="modal" id="habit-modal">
+      <div class="modal-header">
+        <h2 id="habit-modal-title">Add New Habit</h2>
+        <button class="btn-icon modal-close" id="habit-modal-close" aria-label="Close habit modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="habit-name-input">Habit Name</label>
+          <input type="text" id="habit-name-input" placeholder="e.g., Wake up at 6 am" maxlength="50" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="habit-goal-input">Monthly Goal (days)</label>
+          <input type="number" id="habit-goal-input" min="1" max="31" value="25">
+        </div>
+        <div class="form-group">
+          <label id="difficulty-label">Difficulty</label>
+          <div class="difficulty-selector" id="difficulty-selector" role="radiogroup" aria-labelledby="difficulty-label">
+            <button class="difficulty-btn difficulty-easy active" data-difficulty="easy" role="radio" aria-checked="true">Easy</button>
+            <button class="difficulty-btn difficulty-medium" data-difficulty="medium" role="radio" aria-checked="false">Medium</button>
+            <button class="difficulty-btn difficulty-hard" data-difficulty="hard" role="radio" aria-checked="false">Hard</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="habit-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="habit-modal-save">Save Habit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Reward Modal -->
+  <div class="modal-overlay" id="reward-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="reward-modal-title" hidden>
+    <div class="modal" id="reward-modal">
+      <div class="modal-header">
+        <h2 id="reward-modal-title">Add New Reward</h2>
+        <button class="btn-icon modal-close" id="reward-modal-close" aria-label="Close reward modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="reward-name-input">Reward Name</label>
+          <input type="text" id="reward-name-input" placeholder="e.g., Movie night 🎬" maxlength="50" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="reward-cost-input">Cost (coins)</label>
+          <input type="number" id="reward-cost-input" min="1" max="1000" value="50">
+        </div>
+        <div class="form-group">
+          <label for="reward-emoji-input">Emoji Icon</label>
+          <input type="text" id="reward-emoji-input" placeholder="🎬" maxlength="2" value="🎁">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="reward-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="reward-modal-save">Add Reward</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily Notes Modal -->
+  <div class="modal-overlay" id="notes-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="notes-modal-title" hidden>
+    <div class="modal" id="notes-modal">
+      <div class="modal-header">
+        <h2 id="notes-modal-title">Daily Notes — Day 1</h2>
+        <button class="btn-icon modal-close" id="notes-modal-close" aria-label="Close notes modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <textarea id="notes-textarea" placeholder="How was your day? Any reflections?" rows="5" aria-label="Write your daily notes"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="notes-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="notes-modal-save">Save Note</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Container (visual celebration effect) -->
+  <div id="confetti-container" class="confetti-container" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════════
+       SCRIPTS
+  ═══════════════════════════════════════════ -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

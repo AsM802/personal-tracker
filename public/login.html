@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — HabitFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+  <div class="auth-card">
+    <div class="logo">
+      <span class="logo-icon">📊</span>
+      <h1 class="logo-text">HabitFlow</h1>
+    </div>
+    <p class="subtitle">Build better habits, one day at a time</p>
+
+    <div id="error-message" class="error-box" style="display: none;"></div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required placeholder="name@example.com" autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
+          <button type="button" id="toggle-password" class="toggle-pwd" title="Toggle password visibility">👁️</button>
+        </div>
+      </div>
+
+      <button type="submit" id="login-btn" class="btn-primary">Sign In</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Don't have an account? <a href="register.html">Register</a></p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const errorEl = document.getElementById('error-message');
+      const btn = document.getElementById('login-btn');
+      
+      errorEl.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+      
+      try {
+        const res = await fetch('/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          window.location.href = '/index.html';
+        } else {
+          errorEl.textContent = data.error || 'Login failed';
+          errorEl.style.display = 'block';
+        }
+      } catch (err) {
+        errorEl.textContent = 'Network error. Please try again.';
+        errorEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
+    });
+
+    document.getElementById('toggle-password').addEventListener('click', () => {
+      const input = document.getElementById('password');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  </script>
+</body>
+</html>

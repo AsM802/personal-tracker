@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — HabitFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+  <div class="auth-card">
+    <div class="logo">
+      <span class="logo-icon">📊</span>
+      <h1 class="logo-text">HabitFlow</h1>
+    </div>
+    <p class="subtitle">Start your habit journey today</p>
+
+    <div id="error-message" class="error-box" style="display: none;"></div>
+
+    <form id="register-form">
+      <div class="form-group">
+        <label for="displayName">Full Name / Display Name</label>
+        <input type="text" id="displayName" placeholder="Alex Morgan">
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" required minlength="3" placeholder="alex123">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required placeholder="name@example.com">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" required minlength="6" placeholder="••••••••">
+          <button type="button" id="toggle-password" class="toggle-pwd">👁️</button>
+        </div>
+      </div>
+
+      <button type="submit" id="register-btn" class="btn-primary">Create Account</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a href="login.html">Login</a></p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const displayName = document.getElementById('displayName').value.trim();
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const errorEl = document.getElementById('error-message');
+      const btn = document.getElementById('register-btn');
+      
+      errorEl.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'Creating account...';
+      
+      try {
+        const res = await fetch('/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ displayName, username, email, password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          window.location.href = '/index.html';
+        } else {
+          errorEl.textContent = data.error || 'Registration failed';
+          errorEl.style.display = 'block';
+        }
+      } catch (err) {
+        errorEl.textContent = 'Network error. Please try again.';
+        errorEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+      }
+    });
+
+    document.getElementById('toggle-password').addEventListener('click', () => {
+      const input = document.getElementById('password');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  </script>
+</body>
+</html>

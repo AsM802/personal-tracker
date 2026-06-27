@@ -26,9 +26,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=14.0">
+  <link rel="stylesheet" href="style.css?v=15.0">
   <style>
-    /* GUARANTEED EXECUTIVE POPUP OVERRIDES */
+    /* GUARANTEED EXECUTIVE POPUP & GLOBAL INPUT OVERRIDES */
+    input, textarea, select, #reward-name-input, #reward-cost-input, #reward-emoji-input, #habit-name-input, #habit-goal-input, #notes-textarea, #reflection-notes, #reflection-task-status, #wishlist-title-input, #wishlist-target-input, #exam-name-input, #exam-score-input, #exam-accuracy-input {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 12px 16px !important;
+      border-radius: 12px !important;
+      border: 1px solid #2a3458 !important;
+      background: #181e36 !important;
+      color: #ffffff !important;
+      font-size: 14px !important;
+      outline: none !important;
+      display: block !important;
+    }
     .modal-overlay {
       position: fixed !important;
       top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
@@ -104,18 +116,6 @@
       text-transform: uppercase !important;
       letter-spacing: 0.8px !important;
     }
-    input, textarea, select, .executive-textarea, #notes-textarea {
-      width: 100% !important;
-      box-sizing: border-box !important;
-      padding: 12px 16px !important;
-      border-radius: 12px !important;
-      border: 1px solid #2a3458 !important;
-      background: #181e36 !important;
-      color: #ffffff !important;
-      font-size: 14px !important;
-      outline: none !important;
-      display: block !important;
-    }
     .modal-footer, .executive-footer {
       padding: 18px 24px !important;
       background: #13172a !important;
@@ -125,6 +125,37 @@
       gap: 12px !important;
       width: 100% !important;
       box-sizing: border-box !important;
+    }
+    /* YEARLY HEATMAP ULTIMATE STYLING */
+    .heatmap-container {
+      overflow-x: auto !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+      padding: 10px 0 !important;
+    }
+    .heatmap-months {
+      display: flex !important;
+      justify-content: space-between !important;
+      font-size: 11px !important;
+      font-weight: 700 !important;
+      color: #94a3b8 !important;
+    }
+    .heatmap-grid {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 4px !important;
+    }
+    .heatmap-cell {
+      width: 13px !important;
+      height: 13px !important;
+      border-radius: 3px !important;
+      transition: all 0.15s ease !important;
+      cursor: pointer !important;
+    }
+    .heatmap-cell:hover {
+      transform: scale(1.3) !important;
+      box-shadow: 0 0 8px rgba(255,255,255,0.8) !important;
     }
   </style>
 </head>
@@ -618,6 +649,6 @@
        SCRIPTS
   ═══════════════════════════════════════════ -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="app.js?v=14.0"></script>
+  <script src="app.js?v=15.0"></script>
 </body>
 </html>

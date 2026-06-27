@@ -730,6 +730,59 @@ th.day-number.today-column { color: var(--accent-light) !important; font-weight:
   to { opacity: 1; }
 }
 
+/* YEARLY HEATMAP ULTIMATE STYLING */
+.heatmap-section {
+  padding: 20px !important;
+}
+
+.heatmap-container {
+  overflow-x: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  padding: 10px 0 !important;
+}
+
+.heatmap-months {
+  display: flex !important;
+  justify-content: space-between !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: var(--text-muted) !important;
+}
+
+.heatmap-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  max-width: 100% !important;
+}
+
+.heatmap-cell {
+  width: 13px !important;
+  height: 13px !important;
+  border-radius: 3px !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.3) !important;
+  box-shadow: 0 0 8px rgba(255,255,255,0.8) !important;
+  z-index: 10 !important;
+}
+
+/* FIX ALL RAW WHITE INPUTS & EMOJI BOXES */
+input, textarea, select {
+  background: #181e36 !important;
+  color: #ffffff !important;
+  border: 1px solid #2a3458 !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .header-section, .tracker-content, .bottom-section, .gamification-section {

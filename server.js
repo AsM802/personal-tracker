@@ -15,11 +15,29 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors());
 
-// Connect MongoDB
+// Connect MongoDB with caching for serverless environments
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/habitflow';
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log('✅ Connected to MongoDB Atlas'))
-  .catch(err => console.error('❌ MongoDB Connection Error:', err));
+let cachedPromise = null;
+
+async function connectDB() {
+  if (mongoose.connection.readyState >= 1) return;
+  if (!cachedPromise) {
+    cachedPromise = mongoose.connect(MONGODB_URI, {
+      bufferCommands: false,
+    });
+  }
+  await cachedPromise;
+}
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('Database connection error in middleware:', err);
+    res.status(500).json({ error: 'Database connection failed: ' + err.message });
+  }
+});
 
 // Serve static assets
 app.use(express.static(path.join(__dirname, 'public')));

@@ -1642,6 +1642,10 @@ function bindEvents() {
   });
   if (rewardSave) rewardSave.addEventListener('click', saveRewardFromModal);
 
+  // --- Notification Toggle ---
+  const notifyBtn = $('#notify-toggle');
+  if (notifyBtn) notifyBtn.addEventListener('click', toggleNotifications);
+
   // --- Notes Modal ---
   const notesClose  = $('#notes-modal-close');
   const notesCancel = $('#notes-modal-cancel');
@@ -1688,10 +1692,86 @@ function bindEvents() {
     if (e.key === 'Escape') closeAllModals();
   });
 
+  // --- Weekly Reflection Events ---
+  const refBtn = $('#reflection-btn');
+  if (refBtn) refBtn.addEventListener('click', () => openReflectionModal());
+
+  const refClose = $('#reflection-modal-close');
+  if (refClose) refClose.addEventListener('click', () => closeModal('reflection-modal-overlay'));
+
+  const refCancel = $('#reflection-modal-cancel');
+  if (refCancel) refCancel.addEventListener('click', () => closeModal('reflection-modal-overlay'));
+
+  const refSave = $('#reflection-modal-save');
+  if (refSave) refSave.addEventListener('click', () => saveReflection());
+
+  const moodSel = $('#mood-selector');
+  if (moodSel) {
+    moodSel.addEventListener('click', e => {
+      const btn = e.target.closest('.mood-btn');
+      if (!btn) return;
+      moodSel.querySelectorAll('.mood-btn').forEach(b => {
+        b.style.borderColor = 'var(--border-color)';
+        b.style.background = 'transparent';
+      });
+      btn.style.borderColor = 'var(--accent)';
+      btn.style.background = 'rgba(99, 102, 241, 0.1)';
+      moodSel.dataset.selectedMood = btn.dataset.mood;
+    });
+  }
+
   // --- Window resize → redraw charts (debounced) ---
   window.addEventListener('resize', debounce(() => {
     drawAllCharts();
   }, 300));
+}
+
+function toggleNotifications() {
+  if (!('Notification' in window)) {
+    alert('Browser notifications are not supported by your browser.');
+    return;
+  }
+
+  if (Notification.permission === 'granted') {
+    new Notification('HabitFlow 📊', {
+      body: 'Notifications are active! We will remind you to keep up your daily habits. 🔥',
+      icon: '/manifest.json'
+    });
+    alert('Notifications are active!');
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        new Notification('HabitFlow 📊', {
+          body: 'Notifications enabled! Keep up your awesome habit streak! 🔥'
+        });
+      }
+    });
+  } else {
+    alert('Notification permissions were previously blocked in your browser settings.');
+  }
+}
+
+let selectedReflectionMood = '😊';
+
+function openReflectionModal() {
+  openModal('reflection-modal-overlay');
+}
+
+function saveReflection() {
+  const moodSel = $('#mood-selector');
+  const mood = moodSel?.dataset?.selectedMood || '😊';
+  const status = $('#reflection-task-status')?.value || 'most';
+  const notesText = $('#reflection-notes')?.value || '';
+
+  // Award 10 coins for completing weekly reflection!
+  STATE.coins += 10;
+  updateCoinDisplay();
+  saveState();
+  playSound('achievement');
+  triggerConfetti();
+
+  closeModal('reflection-modal-overlay');
+  alert(`🌟 Reflection saved! You earned +10 coins! (Mood: ${mood})`);
 }
 
 /* ------ Habit Modal helpers ------ */

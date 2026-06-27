@@ -421,9 +421,14 @@ function buildGrid() {
   // Row 3: Day numbers (clickable for notes)
   const numRow = document.createElement('tr');
   numRow.innerHTML = '<th></th>';
+  const now = new Date();
+  const isCurrentMonth = STATE.currentMonth === now.getMonth() && STATE.currentYear === now.getFullYear();
+  const todayIndex = now.getDate() - 1;
+
   for (let d = 0; d < daysInMonth; d++) {
     const hasNote = notes[d] && notes[d].trim().length > 0;
-    numRow.innerHTML += `<th class="day-number ${hasNote ? 'has-note' : ''}" data-day="${d}" title="${hasNote ? 'Has note — click to view' : 'Click to add note'}">${d + 1}</th>`;
+    const isToday = isCurrentMonth && d === todayIndex;
+    numRow.innerHTML += `<th class="day-number ${hasNote ? 'has-note' : ''} ${isToday ? 'today-column' : ''}" data-day="${d}" title="${hasNote ? 'Has note — click to view' : 'Click to add note'}">${d + 1}</th>`;
   }
   numRow.innerHTML += '<th></th><th></th>';
   thead.appendChild(numRow);
@@ -450,7 +455,8 @@ function buildGrid() {
     for (let d = 0; d < daysInMonth; d++) {
       const td = document.createElement('td');
       const wk = getWeekForDay(d);
-      td.className = `habit-cell week-${wk + 1}`;
+      const isToday = isCurrentMonth && d === todayIndex;
+      td.className = `habit-cell week-${wk + 1} ${isToday ? 'today-column' : ''}`;
       td.dataset.habit = hi;
       td.dataset.day   = d;
       if (checked[d]) td.classList.add('checked');
@@ -473,6 +479,18 @@ function buildGrid() {
 
     tbody.appendChild(tr);
   });
+
+  // Auto-scroll grid to today's date if viewing current month and year
+  setTimeout(() => {
+    const now = new Date();
+    if (STATE.currentMonth === now.getMonth() && STATE.currentYear === now.getFullYear()) {
+      const todayNumCell = document.querySelector(`.day-number[data-day="${now.getDate() - 1}"]`);
+      const gridWrapper = document.querySelector('.habit-grid-wrapper');
+      if (todayNumCell && gridWrapper) {
+        gridWrapper.scrollLeft = Math.max(0, todayNumCell.offsetLeft - 260);
+      }
+    }
+  }, 100);
 }
 
 /* ─────────────────────────────────────────────

@@ -346,6 +346,19 @@ body {
   font-size: 14px;
 }
 
+/* Today Column Highlight */
+.today-column {
+  border-left: 2px solid var(--accent) !important;
+  border-right: 2px solid var(--accent) !important;
+  background: var(--accent-glow) !important;
+}
+
+th.day-number.today-column {
+  color: var(--accent) !important;
+  font-weight: 900 !important;
+  background: var(--bg-card) !important;
+}
+
 /* Week Columns */
 .week-1 { background: var(--week-1); }
 .week-2 { background: var(--week-2); }

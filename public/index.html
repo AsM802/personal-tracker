@@ -26,7 +26,107 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=11.0">
+  <link rel="stylesheet" href="style.css?v=12.0">
+  <style>
+    /* GUARANTEED EXECUTIVE POPUP OVERRIDES */
+    .modal-overlay {
+      position: fixed !important;
+      top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+      background: rgba(4, 6, 15, 0.88) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 999999 !important;
+      padding: 20px !important;
+    }
+    .modal, .reflection-card-executive {
+      background: #0f1322 !important;
+      border: 1px solid rgba(168, 85, 247, 0.4) !important;
+      border-radius: 20px !important;
+      width: 100% !important;
+      max-width: 520px !important;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.85) !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    .modal-header, .header-gradient-executive {
+      padding: 20px 24px !important;
+      background: linear-gradient(135deg, #6366f1, #a855f7) !important;
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .modal-header h2 {
+      color: #ffffff !important;
+      font-size: 20px !important;
+      font-weight: 800 !important;
+      margin: 0 !important;
+    }
+    .modal-close {
+      width: 34px !important;
+      height: 34px !important;
+      border-radius: 10px !important;
+      background: rgba(255,255,255,0.15) !important;
+      border: 1px solid rgba(255,255,255,0.2) !important;
+      color: #ffffff !important;
+      font-size: 16px !important;
+      cursor: pointer !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .modal-body, .executive-body {
+      padding: 24px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+      background: #0f1322 !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .form-group, .form-group-executive {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 8px !important;
+      width: 100% !important;
+    }
+    .form-group label, .executive-label {
+      color: #a5b4fc !important;
+      font-size: 11px !important;
+      font-weight: 800 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.8px !important;
+    }
+    input, textarea, select, .executive-textarea, #notes-textarea {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 12px 16px !important;
+      border-radius: 12px !important;
+      border: 1px solid #2a3458 !important;
+      background: #181e36 !important;
+      color: #ffffff !important;
+      font-size: 14px !important;
+      outline: none !important;
+      display: block !important;
+    }
+    .modal-footer, .executive-footer {
+      padding: 18px 24px !important;
+      background: #13172a !important;
+      border-top: 1px solid #2a3458 !important;
+      display: flex !important;
+      justify-content: flex-end !important;
+      gap: 12px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+  </style>
 </head>
 
 <body>

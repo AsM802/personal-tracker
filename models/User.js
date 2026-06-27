@@ -19,6 +19,19 @@ const userSchema = new mongoose.Schema({
   }],
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
+  examScores: [{
+    testName: String,
+    score: Number,
+    maxScore: Number,
+    accuracy: Number,
+    date: { type: Date, default: Date.now }
+  }],
+  wishlistItems: [{
+    title: String,
+    targetAmount: Number,
+    currentAmount: Number,
+    category: String
+  }],
   createdAt: { type: Date, default: Date.now }
 });
 

@@ -88,6 +88,8 @@ let habits       = [];
 let notes        = {};
 let rewards      = [];
 let achievements = {};
+let examScores   = [];
+let wishlistItems= [];
 let currentUser  = null;
 
 async function apiGet(url) {
@@ -154,6 +156,8 @@ async function loadState() {
     }
 
     rewards = data.rewards || [];
+    examScores = data.examScores || [];
+    wishlistItems = data.wishlistItems || [];
 
     if (!achievements || Object.keys(achievements).length === 0) {
       resetAchievements();
@@ -198,6 +202,8 @@ const debouncedSaveApi = (function() {
             achievements,
           },
           rewards,
+          examScores,
+          wishlistItems,
         });
       } catch (err) {
         console.error('Failed to save:', err);
@@ -284,6 +290,9 @@ async function init() {
   updateCoinDisplay();
   buildHeatmap();
   calculatePrediction();
+  renderExamScores();
+  renderWishlistItems();
+  fetchLeaderboard();
   bindEvents();
 
   updateThemeButton();
@@ -314,12 +323,14 @@ function updateUserDisplay() {
   }
 
   const mottoBanner = document.getElementById('motto-banner');
-  if (mottoBanner && currentUser) {
-    if (currentUser.username === 'AsM' || currentUser.email === 'agnives46@gmail.com') {
-      mottoBanner.style.display = 'flex';
-    } else {
-      mottoBanner.style.display = 'none';
-    }
+  const examLabel = document.getElementById('exam-tracker-label');
+  const wishLabel = document.getElementById('wishlist-label');
+
+  if (currentUser) {
+    const isAsM = currentUser.username === 'AsM' || currentUser.email === 'agnives46@gmail.com';
+    if (mottoBanner) mottoBanner.style.display = isAsM ? 'flex' : 'none';
+    if (examLabel) examLabel.textContent = isAsM ? '📊 SSC MOCK ANALYTICS' : '📊 EXAM & GOAL ANALYTICS';
+    if (wishLabel) wishLabel.textContent = isAsM ? '🏍️ NYX GARAGE PROGRESS' : '🎁 PERSONAL WISHLIST & SAVINGS';
   }
 }
 
@@ -1729,10 +1740,162 @@ function bindEvents() {
     });
   }
 
+  // --- Timer Events ---
+  const tStart = $('#timer-start-btn');
+  const tReset = $('#timer-reset-btn');
+  if (tStart) tStart.addEventListener('click', toggleTimer);
+  if (tReset) tReset.addEventListener('click', resetTimer);
+
+  // --- Exam Scores Form ---
+  const examForm = $('#exam-score-form');
+  if (examForm) {
+    examForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const testName = $('#exam-name-input')?.value.trim();
+      const score = parseFloat($('#exam-score-input')?.value) || 0;
+      const accuracy = parseFloat($('#exam-accuracy-input')?.value) || 0;
+      if (!testName) return;
+      examScores.unshift({ testName, score, accuracy, date: new Date() });
+      saveState();
+      renderExamScores();
+      $('#exam-name-input').value = '';
+      $('#exam-score-input').value = '';
+      $('#exam-accuracy-input').value = '';
+    });
+  }
+
+  // --- Wishlist Form ---
+  const wishForm = $('#wishlist-form');
+  if (wishForm) {
+    wishForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const title = $('#wishlist-title-input')?.value.trim();
+      const targetAmount = parseInt($('#wishlist-target-input')?.value) || 50;
+      if (!title) return;
+      wishlistItems.unshift({ title, targetAmount, currentAmount: 0 });
+      saveState();
+      renderWishlistItems();
+      $('#wishlist-title-input').value = '';
+      $('#wishlist-target-input').value = '';
+    });
+  }
+
   // --- Window resize → redraw charts (debounced) ---
   window.addEventListener('resize', debounce(() => {
     drawAllCharts();
   }, 300));
+}
+
+/* ─────────────────────────────────────────────
+   FEATURE PACK LOGIC (Timer, Exams, Wishlist, Leaderboard)
+   ───────────────────────────────────────────── */
+
+let timerSeconds = 25 * 60;
+let timerInterval = null;
+let isTimerRunning = false;
+
+function toggleTimer() {
+  const btn = $('#timer-start-btn');
+  if (isTimerRunning) {
+    clearInterval(timerInterval);
+    isTimerRunning = false;
+    if (btn) btn.textContent = 'Start';
+  } else {
+    isTimerRunning = true;
+    if (btn) btn.textContent = 'Pause';
+    timerInterval = setInterval(() => {
+      timerSeconds--;
+      updateTimerDisplay();
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        if (btn) btn.textContent = 'Start';
+        timerSeconds = 25 * 60;
+        updateTimerDisplay();
+        STATE.coins += 5;
+        updateCoinDisplay();
+        saveState();
+        playSound('achievement');
+        triggerConfetti();
+        alert('🎉 Focus Session Complete! You earned +5 coins!');
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  isTimerRunning = false;
+  timerSeconds = 25 * 60;
+  updateTimerDisplay();
+  const btn = $('#timer-start-btn');
+  if (btn) btn.textContent = 'Start';
+}
+
+function updateTimerDisplay() {
+  const display = $('#timer-display');
+  if (!display) return;
+  const mins = Math.floor(timerSeconds / 60);
+  const secs = timerSeconds % 60;
+  display.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function renderExamScores() {
+  const container = $('#exam-scores-list');
+  if (!container) return;
+  if (!examScores || examScores.length === 0) {
+    container.innerHTML = '<span style="color: var(--text-secondary); font-style: italic;">No mock scores logged yet.</span>';
+    return;
+  }
+  container.innerHTML = examScores.map(s => `
+    <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary); padding: 6px 10px; border-radius: 6px;">
+      <span style="font-weight: 600;">${s.testName}</span>
+      <span style="color: var(--accent); font-weight: 700;">${s.score} pts <small style="color: var(--text-secondary);">(${s.accuracy}%)</small></span>
+    </div>
+  `).join('');
+}
+
+function renderWishlistItems() {
+  const container = $('#wishlist-items-list');
+  if (!container) return;
+  if (!wishlistItems || wishlistItems.length === 0) {
+    container.innerHTML = '<span style="color: var(--text-secondary); font-style: italic;">No wishlist items added yet.</span>';
+    return;
+  }
+  container.innerHTML = wishlistItems.map(w => {
+    const pct = Math.min(100, Math.round((STATE.coins / w.targetAmount) * 100));
+    return `
+      <div style="background: var(--bg-secondary); padding: 8px; border-radius: 8px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+          <span style="font-weight: 600;">${w.title}</span>
+          <span>🪙 ${STATE.coins}/${w.targetAmount} (${pct}%)</span>
+        </div>
+        <div style="width: 100%; height: 6px; background: rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden;">
+          <div style="width: ${pct}%; height: 100%; background: linear-gradient(90deg, #f59e0b, #ef4444);"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function fetchLeaderboard() {
+  const container = $('#leaderboard-list');
+  if (!container) return;
+  try {
+    const data = await apiGet('/api/leaderboard');
+    if (data.leaderboard && data.leaderboard.length > 0) {
+      container.innerHTML = data.leaderboard.map((u, i) => `
+        <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary); padding: 8px 12px; border-radius: 8px;">
+          <span><strong>#${i + 1}</strong> ${u.displayName || u.username}</span>
+          <span style="font-weight: 700; color: #f59e0b;">🪙 ${u.coins || 0}</span>
+        </div>
+      `).join('');
+    } else {
+      container.innerHTML = '<span style="color: var(--text-secondary); font-style: italic;">Leaderboard updating...</span>';
+    }
+  } catch (e) {
+    container.innerHTML = '<span style="color: var(--text-secondary); font-style: italic;">Leaderboard unavailable offline</span>';
+  }
 }
 
 function toggleNotifications() {

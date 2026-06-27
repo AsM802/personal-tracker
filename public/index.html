@@ -26,7 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=10.0">
+  <link rel="stylesheet" href="style.css?v=11.0">
 </head>
 
 <body>
@@ -363,80 +363,80 @@
 
   <!-- Add / Edit Habit Modal -->
   <div class="modal-overlay" id="habit-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="habit-modal-title" hidden>
-    <div class="modal" id="habit-modal">
-      <div class="modal-header header-indigo">
+    <div class="modal reflection-card-executive" id="habit-modal" style="max-width: 520px;">
+      <div class="modal-header header-gradient-executive">
         <h2 id="habit-modal-title">✨ Add New Habit</h2>
         <button class="btn-icon modal-close" id="habit-modal-close" aria-label="Close habit modal">✕</button>
       </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="habit-name-input">Habit Name</label>
-          <input type="text" id="habit-name-input" placeholder="e.g., Morning Workout 🏋️‍♂️" maxlength="50" autocomplete="off">
+      <div class="modal-body executive-body" style="padding: 24px;">
+        <div class="form-group-executive">
+          <label class="executive-label" for="habit-name-input">Habit Title</label>
+          <input type="text" id="habit-name-input" class="executive-textarea" style="height: 48px;" placeholder="e.g. Morning Study & Gym 🏋️‍♂️" maxlength="50" autocomplete="off">
         </div>
-        <div class="form-group">
-          <label for="habit-goal-input">Monthly Goal (Days)</label>
-          <input type="number" id="habit-goal-input" min="1" max="31" value="25">
+        <div class="form-group-executive">
+          <label class="executive-label" for="habit-goal-input">Monthly Goal (Days)</label>
+          <input type="number" id="habit-goal-input" class="executive-textarea" style="height: 48px;" min="1" max="31" value="25">
         </div>
-        <div class="form-group">
-          <label id="difficulty-label">Select Difficulty & Reward Tier</label>
-          <div class="difficulty-selector" id="difficulty-selector" role="radiogroup" aria-labelledby="difficulty-label">
+        <div class="form-group-executive">
+          <label class="executive-label" id="difficulty-label">Select Difficulty & Coin Tier</label>
+          <div class="difficulty-selector" id="difficulty-selector">
             <button type="button" class="difficulty-btn difficulty-easy active" data-difficulty="easy">🟢 Easy (+1🪙)</button>
             <button type="button" class="difficulty-btn difficulty-medium" data-difficulty="medium">🟡 Medium (+2🪙)</button>
             <button type="button" class="difficulty-btn difficulty-hard" data-difficulty="hard">🔴 Hard (+3🪙)</button>
           </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" id="habit-modal-cancel">Cancel</button>
-        <button class="btn btn-primary" id="habit-modal-save">Save Habit</button>
+      <div class="modal-footer executive-footer">
+        <button class="btn exec-btn-sec" id="habit-modal-cancel">Cancel</button>
+        <button class="btn exec-btn-pri" id="habit-modal-save">Save Habit</button>
       </div>
     </div>
   </div>
 
   <!-- Add Reward Modal -->
   <div class="modal-overlay" id="reward-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="reward-modal-title" hidden>
-    <div class="modal" id="reward-modal">
-      <div class="modal-header header-pink">
+    <div class="modal reflection-card-executive" id="reward-modal" style="max-width: 520px;">
+      <div class="modal-header header-gradient-executive" style="background: linear-gradient(135deg, #ec4899, #f43f5e) !important;">
         <h2 id="reward-modal-title">🎁 Add New Reward</h2>
         <button class="btn-icon modal-close" id="reward-modal-close" aria-label="Close reward modal">✕</button>
       </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="reward-name-input">Reward Title</label>
-          <input type="text" id="reward-name-input" placeholder="e.g., Weekend Gaming Sprint 🎮" maxlength="50" autocomplete="off">
+      <div class="modal-body executive-body" style="padding: 24px;">
+        <div class="form-group-executive">
+          <label class="executive-label" for="reward-name-input">Reward Title</label>
+          <input type="text" id="reward-name-input" class="executive-textarea" style="height: 48px;" placeholder="e.g. Weekend Gaming Sprint 🎮" maxlength="50" autocomplete="off">
         </div>
-        <div class="form-group">
-          <label for="reward-cost-input">Cost in Habit Coins (🪙)</label>
-          <input type="number" id="reward-cost-input" min="1" max="1000" value="50">
+        <div class="form-group-executive">
+          <label class="executive-label" for="reward-cost-input">Cost in Habit Coins (🪙)</label>
+          <input type="number" id="reward-cost-input" class="executive-textarea" style="height: 48px;" min="1" max="1000" value="50">
         </div>
-        <div class="form-group">
-          <label for="reward-emoji-input">Emoji Icon</label>
-          <input type="text" id="reward-emoji-input" placeholder="🎬" maxlength="2" value="🎁">
+        <div class="form-group-executive">
+          <label class="executive-label" for="reward-emoji-input">Emoji Icon</label>
+          <input type="text" id="reward-emoji-input" class="executive-textarea" style="height: 48px;" placeholder="🎬" maxlength="2" value="🎁">
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" id="reward-modal-cancel">Cancel</button>
-        <button class="btn btn-primary" id="reward-modal-save">Add Reward</button>
+      <div class="modal-footer executive-footer">
+        <button class="btn exec-btn-sec" id="reward-modal-cancel">Cancel</button>
+        <button class="btn exec-btn-pri" id="reward-modal-save">Add Reward</button>
       </div>
     </div>
   </div>
 
   <!-- Daily Notes Modal -->
   <div class="modal-overlay" id="notes-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="notes-modal-title" hidden>
-    <div class="modal" id="notes-modal">
-      <div class="modal-header header-blue">
+    <div class="modal reflection-card-executive" id="notes-modal" style="max-width: 520px;">
+      <div class="modal-header header-gradient-executive" style="background: linear-gradient(135deg, #3b82f6, #06b6d4) !important;">
         <h2 id="notes-modal-title">📝 Daily Reflections</h2>
         <button class="btn-icon modal-close" id="notes-modal-close" aria-label="Close notes modal">✕</button>
       </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="notes-textarea">Your Daily Log / Reflection</label>
-          <textarea id="notes-textarea" placeholder="How was your day? What went well or what blocked you?" rows="5"></textarea>
+      <div class="modal-body executive-body" style="padding: 24px;">
+        <div class="form-group-executive">
+          <label class="executive-label" for="notes-textarea">Your Log & Reflection</label>
+          <textarea id="notes-textarea" class="executive-textarea" style="width: 100%; box-sizing: border-box; min-height: 120px;" placeholder="How was your day? What went well or what blocked you?" rows="5"></textarea>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" id="notes-modal-cancel">Cancel</button>
-        <button class="btn btn-primary" id="notes-modal-save">Save Note</button>
+      <div class="modal-footer executive-footer">
+        <button class="btn exec-btn-sec" id="notes-modal-cancel">Cancel</button>
+        <button class="btn exec-btn-pri" id="notes-modal-save">Save Note</button>
       </div>
     </div>
   </div>

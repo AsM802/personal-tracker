@@ -478,7 +478,7 @@ function buildGrid() {
 
   // Row 3: Day numbers (clickable for notes)
   const numRow = document.createElement('tr');
-  numRow.innerHTML = '<th></th><th></th><th></th>';
+  numRow.innerHTML = '<th class="habit-header-name"></th><th class="habit-header-pct"></th><th class="habit-header-goal"></th>';
   const now = new Date();
   const isCurrentMonth = STATE.currentMonth === now.getMonth() && STATE.currentYear === now.getFullYear();
   const todayIndex = now.getDate() - 1;

@@ -26,7 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=28.0">
+  <link rel="stylesheet" href="style.css?v=29.0">
   <style>
     /* GUARANTEED EXECUTIVE POPUP & GLOBAL INPUT OVERRIDES */
     input, textarea, select, #reward-name-input, #reward-cost-input, #reward-emoji-input, #habit-name-input, #habit-goal-input, #notes-textarea, #reflection-notes, #reflection-task-status, #wishlist-title-input, #wishlist-target-input, #exam-name-input, #exam-score-input, #exam-accuracy-input {
@@ -215,27 +215,37 @@
       left: 0 !important;
       z-index: 10 !important;
       background: #111526 !important;
-      width: 240px !important;
-      min-width: 240px !important;
-      max-width: 240px !important;
+      width: 220px !important;
+      min-width: 220px !important;
+      max-width: 220px !important;
       box-sizing: border-box !important;
     }
     .progress-pct, .habit-header-pct {
+      position: sticky !important;
+      left: 220px !important;
+      z-index: 10 !important;
       background: #181e36 !important;
       font-weight: 800 !important;
       color: #10b981 !important;
       width: 55px !important;
       min-width: 55px !important;
+      max-width: 55px !important;
       text-align: center !important;
+      box-sizing: border-box !important;
     }
     .progress-goal, .habit-header-goal {
+      position: sticky !important;
+      left: 275px !important;
+      z-index: 10 !important;
       background: #181e36 !important;
       font-weight: 700 !important;
       color: #a5b4fc !important;
       width: 65px !important;
       min-width: 65px !important;
+      max-width: 65px !important;
       text-align: center !important;
       border-right: 2px solid #2a3458 !important;
+      box-sizing: border-box !important;
     }
   </style>
 </head>
@@ -774,6 +784,6 @@
        SCRIPTS
   ═══════════════════════════════════════════ -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="app.js?v=28.0"></script>
+  <script src="app.js?v=29.0"></script>
 </body>
 </html>

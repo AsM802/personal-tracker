@@ -302,6 +302,10 @@ th.day-number.today-column { color: var(--accent-light) !important; font-weight:
   padding: 20px !important;
 }
 
+.modal-overlay[hidden], .modal-overlay[style*="display: none"] {
+  display: none !important;
+}
+
 .modal {
   background: var(--bg-card) !important;
   border: 1px solid var(--border-glow) !important;

@@ -344,10 +344,13 @@ async function init() {
   updateThemeButton();
   updateSoundButton();
 
-  // Auto-open Weekly Check-in reflection popup on reload/login
-  setTimeout(() => {
-    openReflectionModal();
-  }, 600);
+  // Auto-open Weekly Check-in reflection popup only on Mondays (1 = Monday)
+  const isMonday = new Date().getDay() === 1;
+  if (isMonday) {
+    setTimeout(() => {
+      openReflectionModal();
+    }, 600);
+  }
 }
 
 function updateUserDisplay() {

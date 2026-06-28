@@ -1885,23 +1885,15 @@ function bindEvents() {
     });
   }
 
-  // --- Motto Modal Events ---
+  // --- Inline Motto Events ---
   const editMottoBtn = $('#edit-motto-btn');
-  if (editMottoBtn) editMottoBtn.addEventListener('click', () => openMottoModal());
+  if (editMottoBtn) editMottoBtn.addEventListener('click', () => toggleInlineMottoEdit(true));
 
-  const mottoClose = $('#motto-modal-close');
-  if (mottoClose) mottoClose.addEventListener('click', () => closeModal('motto-modal-overlay'));
+  const inlineCancel = $('#inline-motto-cancel');
+  if (inlineCancel) inlineCancel.addEventListener('click', () => toggleInlineMottoEdit(false));
 
-  const mottoCancel = $('#motto-modal-cancel');
-  if (mottoCancel) mottoCancel.addEventListener('click', () => closeModal('motto-modal-overlay'));
-
-  const mottoOverlay = $('#motto-modal-overlay');
-  if (mottoOverlay) mottoOverlay.addEventListener('click', e => {
-    if (e.target === mottoOverlay) closeModal('motto-modal-overlay');
-  });
-
-  const mottoSave = $('#motto-modal-save');
-  if (mottoSave) mottoSave.addEventListener('click', () => saveMottoFromModal());
+  const inlineSave = $('#inline-motto-save');
+  if (inlineSave) inlineSave.addEventListener('click', () => saveInlineMotto());
 
   // --- Timer Events ---
   const tStart = $('#timer-start-btn');
@@ -2110,27 +2102,39 @@ function saveReflection() {
   showToast(`Reflection saved! You earned +10 coins!`, '🌟');
 }
 
-/* ------ Motto Modal helpers ------ */
+/* ------ Inline Motto Editor helpers ------ */
 
-function openMottoModal() {
-  const mottoInput = $('#motto-input');
-  const rulesInput = $('#rules-input');
-  if (mottoInput) mottoInput.value = STATE.motto || '';
-  if (rulesInput) rulesInput.value = (STATE.rules || []).join('\n');
-  openModal('motto-modal-overlay');
+function toggleInlineMottoEdit(show) {
+  const viewMode = $('#motto-view-mode');
+  const editMode = $('#motto-edit-mode');
+  const editBtn  = $('#edit-motto-btn');
+
+  if (show) {
+    const mottoInput = $('#inline-motto-input');
+    const rulesInput = $('#inline-rules-input');
+    if (mottoInput) mottoInput.value = STATE.motto || '';
+    if (rulesInput) rulesInput.value = (STATE.rules || []).join('\n');
+    if (viewMode) viewMode.style.display = 'none';
+    if (editMode) editMode.style.display = 'flex';
+    if (editBtn) editBtn.style.display = 'none';
+  } else {
+    if (viewMode) viewMode.style.display = 'flex';
+    if (editMode) editMode.style.display = 'none';
+    if (editBtn) editBtn.style.display = 'inline-block';
+  }
 }
 
-function saveMottoFromModal() {
-  const mottoInput = $('#motto-input');
-  const rulesInput = $('#rules-input');
+function saveInlineMotto() {
+  const mottoInput = $('#inline-motto-input');
+  const rulesInput = $('#inline-rules-input');
   if (mottoInput) STATE.motto = mottoInput.value.trim();
   if (rulesInput) {
     STATE.rules = rulesInput.value.split('\n').map(r => r.trim()).filter(Boolean);
   }
   saveState();
   updateMottoBanner();
-  closeModal('motto-modal-overlay');
-  showToast('Motto & Rules updated successfully!', '🦇');
+  toggleInlineMottoEdit(false);
+  showToast('Motto & Rules saved successfully!', '🦇');
 }
 
 /* ------ Habit Modal helpers ------ */

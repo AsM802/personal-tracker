@@ -26,7 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=22.0">
+  <link rel="stylesheet" href="style.css?v=23.0">
   <style>
     /* GUARANTEED EXECUTIVE POPUP & GLOBAL INPUT OVERRIDES */
     input, textarea, select, #reward-name-input, #reward-cost-input, #reward-emoji-input, #habit-name-input, #habit-goal-input, #notes-textarea, #reflection-notes, #reflection-task-status, #wishlist-title-input, #wishlist-target-input, #exam-name-input, #exam-score-input, #exam-accuracy-input {
@@ -257,17 +257,37 @@
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
         <span style="font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #a5b4fc; text-transform: uppercase;">🦇 PLAN A MOTTO</span>
         <div style="display: flex; gap: 10px; align-items: center;">
-          <button id="edit-motto-btn" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;">✏️ Edit Motto</button>
+          <button id="edit-motto-btn" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">✏️ Edit</button>
           <span style="font-size: 13px; background: rgba(99, 102, 241, 0.3); padding: 4px 12px; border-radius: 20px; border: 1px solid #6366f1;">🏍️ Nyx Roadmap Active</span>
         </div>
       </div>
-      <p id="motto-text-display" style="font-size: 16px; font-weight: 600; font-style: italic; color: #f3f4f6; margin: 4px 0;">"Every dog has a day. This dog's day hasn't come yet. So this dog works until it does."</p>
-      <div id="motto-rules-display" style="display: flex; gap: 16px; font-size: 12px; color: rgba(255,255,255,0.85); flex-wrap: wrap; margin-top: 4px;">
-        <span>📚 No bike mods unless you study</span>
-        <span>💰 Save before spending</span>
-        <span>🏍️ Nyx gets rewarded when ASM stays consistent</span>
-        <span>😴 Sleep enough to recover</span>
-        <span>🍌 Hostel Food Supplement (bananas, eggs, milk, peanuts, oats)</span>
+      
+      <!-- VIEW MODE -->
+      <div id="motto-view-mode" style="display: flex; flex-direction: column; gap: 10px;">
+        <p id="motto-text-display" style="font-size: 16px; font-weight: 600; font-style: italic; color: #f3f4f6; margin: 4px 0;">"Every dog has a day. This dog's day hasn't come yet. So this dog works until it does."</p>
+        <div id="motto-rules-display" style="display: flex; gap: 16px; font-size: 12px; color: rgba(255,255,255,0.85); flex-wrap: wrap; margin-top: 4px;">
+          <span>📚 No bike mods unless you study</span>
+          <span>💰 Save before spending</span>
+          <span>🏍️ Nyx gets rewarded when ASM stays consistent</span>
+          <span>😴 Sleep enough to recover</span>
+          <span>🍌 Hostel Food Supplement (bananas, eggs, milk, peanuts, oats)</span>
+        </div>
+      </div>
+
+      <!-- INLINE EDIT MODE (No modal popup needed!) -->
+      <div id="motto-edit-mode" style="display: none; flex-direction: column; gap: 12px; margin-top: 6px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <label style="font-size: 11px; font-weight: 800; color: #a5b4fc; text-transform: uppercase;">Motto Quote:</label>
+          <input type="text" id="inline-motto-input" style="width: 100%; box-sizing: border-box; padding: 10px 14px; border-radius: 10px; border: 1px solid #6366f1; background: #181e36; color: #fff; font-size: 14px; font-weight: 600;" placeholder="e.g. Every dog has a day...">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <label style="font-size: 11px; font-weight: 800; color: #a5b4fc; text-transform: uppercase;">Rules & Discipline (one per line):</label>
+          <textarea id="inline-rules-input" rows="4" style="width: 100%; box-sizing: border-box; padding: 10px 14px; border-radius: 10px; border: 1px solid #6366f1; background: #181e36; color: #fff; font-size: 13px; resize: vertical;" placeholder="📚 Rule 1&#10;💰 Rule 2"></textarea>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button id="inline-motto-cancel" style="background: rgba(255,255,255,0.1); color: #94a3b8; border: 1px solid rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;">Cancel</button>
+          <button id="inline-motto-save" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">💾 Save Motto</button>
+        </div>
       </div>
     </div>
 
@@ -731,29 +751,7 @@
     </div>
   </div>
 
-  <!-- EDIT MOTTO & RULES MODAL -->
-  <div class="modal-overlay" id="motto-modal-overlay" aria-labelledby="motto-modal-title" aria-modal="true" role="dialog" hidden>
-    <div class="modal reflection-card-executive">
-      <div class="modal-header header-gradient-executive">
-        <h2 id="motto-modal-title">🦇 Edit Motto & Rules</h2>
-        <button class="modal-close" id="motto-modal-close" aria-label="Close modal">✕</button>
-      </div>
-      <div class="modal-body executive-body">
-        <div class="form-group-executive">
-          <label class="executive-label" for="motto-input">Personal Motto Statement:</label>
-          <textarea id="motto-input" class="executive-textarea" rows="3" placeholder="e.g. Every dog has a day..."></textarea>
-        </div>
-        <div class="form-group-executive">
-          <label class="executive-label" for="rules-input">Personal Rules & Discipline Notes (one per line):</label>
-          <textarea id="rules-input" class="executive-textarea" rows="5" placeholder="📚 No bike mods unless you study&#10;💰 Save before spending"></textarea>
-        </div>
-      </div>
-      <div class="modal-footer executive-footer">
-        <button class="btn btn-secondary exec-btn-sec" id="motto-modal-cancel">Cancel</button>
-        <button class="btn btn-primary exec-btn-pri" id="motto-modal-save">💾 Save Motto & Rules</button>
-      </div>
-    </div>
-  </div>
+
 
   <!-- Confetti Container (visual celebration effect) -->
   <div id="confetti-container" class="confetti-container" aria-hidden="true"></div>
@@ -762,6 +760,6 @@
        SCRIPTS
   ═══════════════════════════════════════════ -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="app.js?v=22.0"></script>
+  <script src="app.js?v=23.0"></script>
 </body>
 </html>

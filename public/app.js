@@ -1666,7 +1666,7 @@ function closeModal(overlayId) {
 }
 
 function closeAllModals() {
-  ['habit-modal-overlay', 'reward-modal-overlay', 'notes-modal-overlay', 'reflection-modal-overlay', 'motto-modal-overlay'].forEach(id => {
+  ['habit-modal-overlay', 'reward-modal-overlay', 'notes-modal-overlay', 'reflection-modal-overlay'].forEach(id => {
     closeModal(id);
   });
 }

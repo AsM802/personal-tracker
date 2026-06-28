@@ -524,12 +524,12 @@ function buildGrid() {
 
     // Progress cells placed immediately next to Habit Name!
     const pctTd = document.createElement('td');
-    pctTd.className = 'progress-pct sticky-progress-pct';
+    pctTd.className = 'progress-pct';
     pctTd.textContent = `${Math.min(pct, 100)}%`;
     tr.appendChild(pctTd);
 
     const goalTd = document.createElement('td');
-    goalTd.className = 'progress-goal sticky-progress-goal';
+    goalTd.className = 'progress-goal';
     goalTd.textContent = `${totalChecked}/${habit.goal}`;
     tr.appendChild(goalTd);
 

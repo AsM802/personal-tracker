@@ -41,6 +41,15 @@ async function seed() {
 
     const asmMedals = { bronze: 3, silver: 2, gold: 1, honor: 0 };
 
+    const asmMotto = `"Every dog has a day. This dog's day hasn't come yet. So this dog works until it does."`;
+    const asmRules = [
+      '📚 No bike mods unless you study',
+      '💰 Save before spending',
+      '🏍️ Nyx gets rewarded when ASM stays consistent',
+      '😴 Sleep enough to recover',
+      '🍌 Hostel Food Supplement (bananas, eggs, milk, peanuts, oats)'
+    ];
+
     if (!user) {
       user = new User({
         username: 'AsM',
@@ -49,6 +58,8 @@ async function seed() {
         passwordHash: hash,
         rewards: asmRewards,
         medals: asmMedals,
+        motto: asmMotto,
+        rules: asmRules,
         coins: 100
       });
       await user.save();
@@ -56,6 +67,8 @@ async function seed() {
     } else {
       user.rewards = asmRewards;
       user.medals = asmMedals;
+      user.motto = asmMotto;
+      user.rules = asmRules;
       user.coins = 100;
       await user.save();
       console.log('Updated existing user for AsM');

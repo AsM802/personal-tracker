@@ -6,6 +6,8 @@ const userSchema = new mongoose.Schema({
   displayName: { type: String, trim: true },
   passwordHash: { type: String, required: true },
   coins: { type: Number, default: 0 },
+  motto: { type: String, default: '"Every dog has a day. This dog\'s day hasn\'t come yet. So this dog works until it does."' },
+  rules: [{ type: String }],
   medals: {
     bronze: { type: Number, default: 0 },
     silver: { type: Number, default: 0 },

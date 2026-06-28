@@ -22,6 +22,8 @@ router.get('/data', async (req, res) => {
       notes: habitData ? habitData.notes : {},
       settings: {
         coins: user.coins || 0,
+        motto: user.motto || '"Every dog has a day. This dog\'s day hasn\'t come yet. So this dog works until it does."',
+        rules: user.rules || [],
         medals: user.medals || { bronze: 0, silver: 0, gold: 0, honor: 0 },
         darkMode: user.darkMode || false,
         soundEnabled: user.soundEnabled !== false,
@@ -53,6 +55,8 @@ router.post('/save', async (req, res) => {
     const updateObj = {};
     if (settings) {
       if (settings.coins !== undefined) updateObj.coins = settings.coins;
+      if (settings.motto !== undefined) updateObj.motto = settings.motto;
+      if (settings.rules !== undefined) updateObj.rules = settings.rules;
       if (settings.medals !== undefined) updateObj.medals = settings.medals;
       if (settings.darkMode !== undefined) updateObj.darkMode = settings.darkMode;
       if (settings.soundEnabled !== undefined) updateObj.soundEnabled = settings.soundEnabled;

@@ -382,6 +382,19 @@ function updateUserDisplay() {
     if (mottoBanner) mottoBanner.style.display = isAsM ? 'flex' : 'none';
     if (examLabel) examLabel.textContent = isAsM ? '📊 SSC MOCK ANALYTICS' : '📊 EXAM & GOAL ANALYTICS';
     if (wishLabel) wishLabel.textContent = isAsM ? '🏍️ NYX GARAGE PROGRESS' : '🎁 PERSONAL WISHLIST & SAVINGS';
+    updateMottoBanner();
+  }
+}
+
+function updateMottoBanner() {
+  const textEl = document.getElementById('motto-text-display');
+  const rulesEl = document.getElementById('motto-rules-display');
+  
+  if (textEl && STATE.motto) {
+    textEl.textContent = STATE.motto;
+  }
+  if (rulesEl && STATE.rules && Array.isArray(STATE.rules) && STATE.rules.length > 0) {
+    rulesEl.innerHTML = STATE.rules.map(r => `<span>${r}</span>`).join('');
   }
 }
 
@@ -1645,7 +1658,7 @@ function closeModal(overlayId) {
 }
 
 function closeAllModals() {
-  ['habit-modal-overlay', 'reward-modal-overlay', 'notes-modal-overlay', 'reflection-modal-overlay'].forEach(id => {
+  ['habit-modal-overlay', 'reward-modal-overlay', 'notes-modal-overlay', 'reflection-modal-overlay', 'motto-modal-overlay'].forEach(id => {
     closeModal(id);
   });
 }
@@ -1864,6 +1877,24 @@ function bindEvents() {
     });
   }
 
+  // --- Motto Modal Events ---
+  const editMottoBtn = $('#edit-motto-btn');
+  if (editMottoBtn) editMottoBtn.addEventListener('click', () => openMottoModal());
+
+  const mottoClose = $('#motto-modal-close');
+  if (mottoClose) mottoClose.addEventListener('click', () => closeModal('motto-modal-overlay'));
+
+  const mottoCancel = $('#motto-modal-cancel');
+  if (mottoCancel) mottoCancel.addEventListener('click', () => closeModal('motto-modal-overlay'));
+
+  const mottoOverlay = $('#motto-modal-overlay');
+  if (mottoOverlay) mottoOverlay.addEventListener('click', e => {
+    if (e.target === mottoOverlay) closeModal('motto-modal-overlay');
+  });
+
+  const mottoSave = $('#motto-modal-save');
+  if (mottoSave) mottoSave.addEventListener('click', () => saveMottoFromModal());
+
   // --- Timer Events ---
   const tStart = $('#timer-start-btn');
   const tReset = $('#timer-reset-btn');
@@ -2069,6 +2100,29 @@ function saveReflection() {
 
   closeModal('reflection-modal-overlay');
   showToast(`Reflection saved! You earned +10 coins!`, '🌟');
+}
+
+/* ------ Motto Modal helpers ------ */
+
+function openMottoModal() {
+  const mottoInput = $('#motto-input');
+  const rulesInput = $('#rules-input');
+  if (mottoInput) mottoInput.value = STATE.motto || '';
+  if (rulesInput) rulesInput.value = (STATE.rules || []).join('\n');
+  openModal('motto-modal-overlay');
+}
+
+function saveMottoFromModal() {
+  const mottoInput = $('#motto-input');
+  const rulesInput = $('#rules-input');
+  if (mottoInput) STATE.motto = mottoInput.value.trim();
+  if (rulesInput) {
+    STATE.rules = rulesInput.value.split('\n').map(r => r.trim()).filter(Boolean);
+  }
+  saveState();
+  updateMottoBanner();
+  closeModal('motto-modal-overlay');
+  showToast('Motto & Rules updated successfully!', '🦇');
 }
 
 /* ------ Habit Modal helpers ------ */

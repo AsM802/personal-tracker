@@ -344,9 +344,13 @@ async function init() {
   updateThemeButton();
   updateSoundButton();
 
-  // Auto-open Weekly Check-in reflection popup only on Mondays (1 = Monday)
-  const isMonday = new Date().getDay() === 1;
-  if (isMonday) {
+  // Auto-open Weekly Check-in reflection popup only on Mondays (1 = Monday), once per week
+  const today = new Date();
+  const isMonday = today.getDay() === 1;
+  const lastReflection = localStorage.getItem('last_reflection_week');
+  const currentWeekKey = `${today.getFullYear()}_M${today.getMonth()}_W${Math.floor(today.getDate() / 7)}`;
+
+  if (isMonday && lastReflection !== currentWeekKey) {
     setTimeout(() => {
       openReflectionModal();
     }, 600);
@@ -2097,6 +2101,9 @@ function saveReflection() {
   saveState();
   playSound('achievement');
   triggerConfetti();
+
+  const today = new Date();
+  localStorage.setItem('last_reflection_week', `${today.getFullYear()}_M${today.getMonth()}_W${Math.floor(today.getDate() / 7)}`);
 
   closeModal('reflection-modal-overlay');
   showToast(`Reflection saved! You earned +10 coins!`, '🌟');

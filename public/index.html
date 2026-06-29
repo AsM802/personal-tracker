@@ -267,8 +267,17 @@
         <button class="btn-icon sound-toggle" id="sound-toggle" title="Toggle sounds" aria-label="Toggle sound effects">🔊</button>
         <button class="btn btn-secondary theme-toggle" id="theme-toggle" title="Toggle theme" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; font-weight: 600;">🌙 Theme</button>
         <button class="btn btn-primary" id="export-btn" aria-label="Export tracker as image">📤 Export</button>
-      </div>
     </header>
+
+    <!-- MOBILE SECTION NAVIGATION BAR -->
+    <nav class="mobile-nav-bar" id="mobile-nav-bar" aria-label="Mobile Navigation">
+      <button class="mobile-nav-btn active" data-section="all">🌐 All</button>
+      <button class="mobile-nav-btn" data-section="tracker">📋 Tracker</button>
+      <button class="mobile-nav-btn" data-section="analytics">📊 Stats</button>
+      <button class="mobile-nav-btn" data-section="shop">🏆 Shop</button>
+      <button class="mobile-nav-btn" data-section="nyx">🏍️ Nyx & SSC</button>
+    </nav>
+
 
     <!-- PLAN A MOTTO & RULES BANNER (Shown for AsM) -->
     <div class="card motto-banner" id="motto-banner" style="display: none; background: linear-gradient(135deg, rgba(15, 12, 41, 0.9), rgba(48, 43, 99, 0.9)); color: #fff; padding: 20px; border-radius: 16px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.15); flex-direction: column; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);">
@@ -367,7 +376,7 @@
     <!-- ═══════════════════════════════════════════
          HEADER SECTION — Month Info / Charts
     ═══════════════════════════════════════════ -->
-    <section class="header-section" aria-label="Month selection and progress overview">
+    <section class="header-section" data-mobile-sec="analytics" aria-label="Month selection and progress overview">
 
       <!-- Left: Month Info -->
       <div class="month-info card">
@@ -412,7 +421,7 @@
     <!-- ═══════════════════════════════════════════
          MAIN TRACKER SECTION — Habit Grid
     ═══════════════════════════════════════════ -->
-    <section class="tracker-section card" aria-label="Daily habits tracker grid">
+    <section class="tracker-section card" data-mobile-sec="tracker" aria-label="Daily habits tracker grid">
       <div class="tracker-header">
         <div style="display: flex; gap: 14px; align-items: center;">
           <div class="section-label" style="background: linear-gradient(135deg, #3b82f6, #06b6d4);">DAILY HABITS</div>
@@ -464,7 +473,7 @@
     <!-- ═══════════════════════════════════════════
          BOTTOM SECTION — Overview & Top Habits
     ═══════════════════════════════════════════ -->
-    <section class="bottom-section" aria-label="Weekly overview and top habits">
+    <section class="bottom-section" data-mobile-sec="analytics" aria-label="Weekly overview and top habits">
 
       <!-- Left: Daily Overview -->
       <div class="overview-card card">
@@ -517,7 +526,7 @@
     <!-- ═══════════════════════════════════════════
          STREAKS & ACHIEVEMENTS
     ═══════════════════════════════════════════ -->
-    <section class="gamification-section" aria-label="Streaks and achievements">
+    <section class="gamification-section" data-mobile-sec="shop" aria-label="Streaks and achievements">
       <div class="streaks-card card">
         <div class="section-label" style="background: linear-gradient(135deg, #ef4444, #f97316);">🔥 STREAKS</div>
         <div id="streaks-list" class="streaks-list" role="list" aria-label="Current habit streaks">
@@ -536,7 +545,7 @@
     <!-- ═══════════════════════════════════════════
          REWARD SHOP
     ═══════════════════════════════════════════ -->
-    <section class="reward-section card" aria-label="Reward shop">
+    <section class="reward-section card" data-mobile-sec="shop" aria-label="Reward shop">
       <div class="reward-header">
         <div class="section-label" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">🛒 REWARD SHOP</div>
         <div class="reward-info">
@@ -559,7 +568,7 @@
     <!-- ═══════════════════════════════════════════
          FEATURE PACK: TIMER, EXAMS, WISHLIST, LEADERBOARD
     ═══════════════════════════════════════════ -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 24px;">
+    <div data-mobile-sec="nyx" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 24px;">
       
       <!-- 1. Pomodoro Focus Timer -->
       <section class="card" style="padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">

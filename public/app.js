@@ -1700,9 +1700,29 @@ function closeAllModals() {
 let editingHabitIndex = null;
 
 function bindEvents() {
+  // --- Mobile Section Navigation Bar ---
+  const mobileNav = $('#mobile-nav-bar');
+  if (mobileNav) {
+    mobileNav.addEventListener('click', e => {
+      const btn = e.target.closest('.mobile-nav-btn');
+      if (!btn) return;
+      $$('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const targetSec = btn.dataset.section;
+      $$('[data-mobile-sec]').forEach(sec => {
+        if (targetSec === 'all' || sec.dataset.mobileSec === targetSec) {
+          sec.classList.remove('mobile-section-hidden');
+        } else {
+          sec.classList.add('mobile-section-hidden');
+        }
+      });
+    });
+  }
+
   // --- Month / Year selectors ---
   const monthSel = $('#month-select');
   const yearSel  = $('#year-select');
+
 
   if (monthSel) monthSel.addEventListener('change', () => {
     STATE.currentMonth = parseInt(monthSel.value);

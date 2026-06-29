@@ -190,38 +190,61 @@ function resetAchievements() {
   });
 }
 
-const debouncedSaveApi = (function() {
+const saveApiManager = (function() {
   let timer;
-  return function() {
-    clearTimeout(timer);
-    timer = setTimeout(async () => {
-      try {
-        await apiPost('/api/save', {
-          month: STATE.currentMonth,
-          year: STATE.currentYear,
-          habits,
-          notes,
-          settings: {
-            coins: STATE.coins,
-            medals: STATE.medals,
-            darkMode: STATE.darkMode,
-            soundEnabled: STATE.soundEnabled,
-            achievements,
-          },
-          rewards,
-          examScores,
-          wishlistItems,
-        });
-      } catch (err) {
-        console.error('Failed to save:', err);
-      }
-    }, 500);
+  async function performSave() {
+    try {
+      await apiPost('/api/save', {
+        month: STATE.currentMonth,
+        year: STATE.currentYear,
+        habits,
+        notes,
+        settings: {
+          coins: STATE.coins,
+          medals: STATE.medals,
+          darkMode: STATE.darkMode,
+          soundEnabled: STATE.soundEnabled,
+          achievements,
+        },
+        rewards,
+        examScores,
+        wishlistItems,
+      });
+    } catch (err) {
+      console.error('Failed to save to cloud database:', err);
+    }
+  }
+
+  return {
+    debounce: function() {
+      clearTimeout(timer);
+      timer = setTimeout(performSave, 500);
+    },
+    flush: async function() {
+      clearTimeout(timer);
+      await performSave();
+    }
   };
 })();
 
-function saveState() {
-  debouncedSaveApi();
+function saveState(immediate = false) {
+  if (immediate) {
+    saveApiManager.flush();
+  } else {
+    saveApiManager.debounce();
+  }
 }
+
+// Mobile lifecycle sync: Save immediately when user switches apps or closes tab on mobile
+window.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    saveApiManager.flush();
+  }
+});
+window.addEventListener('pagehide', () => {
+  saveApiManager.flush();
+});
+
 
 /* ─────────────────────────────────────────────
    3. UTILITY FUNCTIONS
@@ -343,7 +366,7 @@ async function init() {
 
   updateThemeButton();
   updateSoundButton();
-
+  initRikoAssistant();
 }
 
 function updateUserDisplay() {
@@ -1505,17 +1528,9 @@ function buildHeatmap() {
   for (let m = 0; m < 12; m++) {
     const dim = getDaysInMonth(m, year);
 
-    // Load habits for that month (from localStorage)
-    let monthHabits;
-    try {
-      const raw = localStorage.getItem(habitsKey(m, year));
-      monthHabits = raw ? JSON.parse(raw) : null;
-    } catch (_) { monthHabits = null; }
+    // Load habits for that month
+    let monthHabits = (m === STATE.currentMonth && year === STATE.currentYear) ? habits : null;
 
-    // If it's the current displayed month, use live data
-    if (m === STATE.currentMonth && year === STATE.currentYear) {
-      monthHabits = habits;
-    }
 
     for (let d = 0; d < dim; d++) {
       let pct = 0;
@@ -2373,6 +2388,279 @@ function updateSummaryStatBar() {
   if (quoteEl) {
     const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
     quoteEl.textContent = MOTIVATIONAL_QUOTES[dayOfYear % MOTIVATIONAL_QUOTES.length];
+  }
+}
+
+/* ─────────────────────────────────────────────
+   RIKO & REX (3D AVATAR & REAL METRICS ENGINE)
+   ───────────────────────────────────────────── */
+
+let currentCharacter = 'riko';
+
+function initRikoAssistant() {
+  const closeBtn    = $('#riko-close-btn');
+  const speechCard  = $('#riko-speech-card');
+  const roastBtn    = $('#riko-btn-roast');
+  const adviceBtn   = $('#riko-btn-advice');
+  const nyxBtn      = $('#riko-btn-nyx');
+  const charSelect  = $('#char-voice-select');
+
+  init3DAvatarCanvas();
+
+  if (charSelect) {
+    charSelect.addEventListener('change', (e) => {
+      currentCharacter = e.target.value;
+      const titleEl = $('#riko-char-title');
+      if (titleEl) {
+        titleEl.textContent = currentCharacter === 'rex' ? '⚔️ REX ANALYTICS' : '⚡ RIKO ANALYTICS';
+      }
+      generateSmartStatus();
+    });
+  }
+
+  if (closeBtn && speechCard) {
+    closeBtn.addEventListener('click', () => {
+      speechCard.style.display = 'none';
+    });
+  }
+
+  if (roastBtn)  roastBtn.addEventListener('click', generateSmartStatus);
+  if (adviceBtn) adviceBtn.addEventListener('click', generateGrokInsight);
+  if (nyxBtn)    nyxBtn.addEventListener('click', generateNyxCheck);
+
+  generateSmartStatus();
+}
+
+function setRikoDialogue(msg) {
+  const el = $('#riko-dialogue-text');
+  if (!el) return;
+  el.style.opacity = '0.4';
+  setTimeout(() => {
+    el.textContent = msg;
+    el.style.opacity = '1';
+  }, 120);
+}
+
+function generateSmartStatus() {
+  const todayIndex = new Date().getDate() - 1;
+  let doneToday = 0;
+  let total = habits ? habits.length : 0;
+
+  if (habits) {
+    habits.forEach(h => {
+      if (h.checks && h.checks[todayIndex]) doneToday++;
+    });
+  }
+  const pct = total > 0 ? Math.round((doneToday / total) * 100) : 0;
+
+  if (currentCharacter === 'rex') {
+    setRikoDialogue(`⚔️ Tactical Metrics: ${doneToday}/${total} habits completed today (${pct}%). Current Habit Coins: ${STATE.coins || 0} 🪙.`);
+  } else {
+    setRikoDialogue(`📈 Daily Progress: You have completed ${doneToday} of ${total} planned habits today (${pct}% completion). Keep up your momentum!`);
+  }
+}
+
+function generateGrokInsight() {
+  let avgAccuracy = 0;
+  if (STATE.examScores && STATE.examScores.length > 0) {
+    const sum = STATE.examScores.reduce((acc, curr) => acc + (Number(curr.accuracy) || 0), 0);
+    avgAccuracy = Math.round(sum / STATE.examScores.length);
+  }
+
+  const daysInMonth = getDaysInMonth(STATE.currentMonth, STATE.currentYear);
+  let totalChecked = 0;
+  let totalPossible = (habits ? habits.length : 1) * daysInMonth;
+
+  if (habits) {
+    habits.forEach(h => {
+      if (h.checks) {
+        Object.keys(h.checks).forEach(k => { if (h.checks[k]) totalChecked++; });
+      }
+    });
+  }
+  const monthlyPct = totalPossible > 0 ? Math.round((totalChecked / totalPossible) * 100) : 0;
+
+  if (avgAccuracy > 0) {
+    setRikoDialogue(`🧠 SSC Exam Focus: Your average SSC Mock accuracy is currently ${avgAccuracy}%. Overall habit adherence is ${monthlyPct}%. Consistency in morning revision is key!`);
+  } else {
+    setRikoDialogue(`🧠 Monthly Analytics: Overall habit adherence is currently at ${monthlyPct}%. Log your SSC mock scores in the Exam section to track your accuracy trends!`);
+  }
+}
+
+function generateNyxCheck() {
+  const b = STATE.medals?.bronze || 0;
+  const s = STATE.medals?.silver || 0;
+  const g = STATE.medals?.gold || 0;
+  const coins = STATE.coins || 0;
+
+  let nextReward = "FuelX Pro";
+  let reqMedals = 10;
+  let reqCoins = 500;
+
+  if (STATE.rewards && STATE.rewards.length > 0) {
+    const unpurchased = STATE.rewards.find(r => !r.unlocked);
+    if (unpurchased) {
+      nextReward = unpurchased.name;
+      reqCoins = unpurchased.cost || 500;
+      reqMedals = unpurchased.reqMedals || 10;
+    }
+  }
+
+  setRikoDialogue(`🏍️ Nyx Roadmap: ${nextReward} requires ${reqMedals} Medals and ${reqCoins} Coins. You currently have 🥉 ${b} Bronze Medals and ${coins} Coins.`);
+}
+
+function setRikoDialogue(msg) {
+  const el = $('#riko-dialogue-text');
+  if (!el) return;
+  el.style.opacity = '0.4';
+  setTimeout(() => {
+    el.textContent = msg;
+    el.style.opacity = '1';
+    speakRikoWithLipSync(msg);
+  }, 120);
+}
+
+let isTalking = false;
+let talkTimer = null;
+
+function speakRikoWithLipSync(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+
+  // Clean emojis out for speech synthesis
+  const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+
+  if (currentCharacter === 'rex') {
+    utterance.pitch = 0.8;
+    utterance.rate = 1.0;
+  } else {
+    utterance.pitch = 1.25;
+    utterance.rate = 1.1;
+  }
+
+  utterance.onstart = () => { isTalking = true; };
+  utterance.onend = () => { isTalking = false; };
+  utterance.onerror = () => { isTalking = false; };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+/* Interactive 3D WebGL Avatar Canvas with Mouse Tracking & Lip Sync */
+function init3DAvatarCanvas() {
+  const canvas = document.getElementById('riko-vrm-canvas');
+  if (!canvas) return;
+
+  try {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let mouseX = 0;
+    let mouseY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      mouseX = (e.clientX - cx) / (window.innerWidth / 2);
+      mouseY = (e.clientY - cy) / (window.innerHeight / 2);
+    });
+
+    let angle = 0;
+    let mouthMelt = 0;
+
+    function renderFrame() {
+      const W = canvas.width = 220;
+      const H = canvas.height = 320;
+      ctx.clearRect(0, 0, W, H);
+
+      angle += 0.03;
+      const headTiltX = mouseX * 25;
+      const headTiltY = mouseY * 20;
+      const centerY = H / 2 + Math.sin(angle) * 6 + headTiltY;
+      const centerX = W / 2 + headTiltX;
+
+      // Glow backdrop
+      const grad = ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, 95);
+      grad.addColorStop(0, currentCharacter === 'rex' ? 'rgba(99, 102, 241, 0.4)' : 'rgba(6, 182, 212, 0.4)');
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 95, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Holographic Body & Head Structure
+      ctx.save();
+      ctx.translate(centerX, centerY);
+
+      // Head Rotation towards Mouse
+      ctx.rotate(mouseX * 0.2);
+
+      // Body Shoulders
+      ctx.strokeStyle = currentCharacter === 'rex' ? 'rgba(129, 140, 248, 0.5)' : 'rgba(34, 211, 238, 0.5)';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(-50, 70);
+      ctx.quadraticCurveTo(0, 40, 50, 70);
+      ctx.stroke();
+
+      // Head Shape
+      ctx.fillStyle = '#0f172a';
+      ctx.strokeStyle = currentCharacter === 'rex' ? '#818cf8' : '#22d3ee';
+      ctx.lineWidth = 3;
+      ctx.shadowColor = currentCharacter === 'rex' ? '#6366f1' : '#06b6d4';
+      ctx.shadowBlur = 18;
+
+      ctx.beginPath();
+      ctx.arc(0, -10, 42, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Animated Eyes (tracking mouse)
+      const eyeOffsetX = mouseX * 6;
+      const eyeOffsetY = mouseY * 4;
+
+      ctx.fillStyle = currentCharacter === 'rex' ? '#a5b4fc' : '#67e8f9';
+      // Left Eye
+      ctx.beginPath();
+      ctx.arc(-16 + eyeOffsetX, -16 + eyeOffsetY, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Right Eye
+      ctx.beginPath();
+      ctx.arc(16 + eyeOffsetX, -16 + eyeOffsetY, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Eye Pupils
+      ctx.fillStyle = '#090d16';
+      ctx.beginPath();
+      ctx.arc(-16 + eyeOffsetX + mouseX * 2, -16 + eyeOffsetY + mouseY * 2, 3, 0, Math.PI * 2);
+      ctx.arc(16 + eyeOffsetX + mouseX * 2, -16 + eyeOffsetY + mouseY * 2, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Animated Mouth (Lip Sync when talking!)
+      if (isTalking) {
+        mouthMelt += 0.25;
+        const mouthOpen = Math.abs(Math.sin(mouthMelt)) * 12 + 4;
+        ctx.fillStyle = '#f43f5e';
+        ctx.beginPath();
+        ctx.ellipse(0, 12, 8, mouthOpen / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.strokeStyle = currentCharacter === 'rex' ? '#a5b4fc' : '#67e8f9';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(0, 10, 8, 0.1, Math.PI - 0.1);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+
+      requestAnimationFrame(renderFrame);
+    }
+    renderFrame();
+  } catch (e) {
+    console.log('3D Canvas Init Error:', e);
   }
 }
 
